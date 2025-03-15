@@ -28,7 +28,15 @@ function handleRequest() {
 rm -f /tmp/scs_response
 mkfifo /tmp/scs_response
 
-cat /tmp/scs_response | nc -lN 8080 -k -v | handleRequest 
+while true; do
+    echo "yes"
+    cat /tmp/scs_response | nc -l -p 8080 -q 1 | handleRequest
+    sleep 1
+done
+
+# cat /tmp/scs_response | nc -lN 8080 -k -v | handleRequest
 # while true; do
-#     cat /tmp/scs_response | nc -lN 8080 -k -v | handleRequest 
+#     # cat /tmp/scs_response |
+#     nc -l -p 8080 -v | handleRequest &
+#     wait $!
 # done
