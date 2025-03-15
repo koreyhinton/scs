@@ -1,0 +1,16 @@
+# Emacs autosave files
+\#*\#
+.\#*
+*~
+
+# node
+node_modules/
+
+# lib files
+ui/src/lib/
+
+# sed in-place backup files
+*.bak*
+
+# notes
+todo.wik
