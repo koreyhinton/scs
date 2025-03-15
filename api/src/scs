@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# https://dev.to/leandronsp/building-a-web-server-in-bash-part-ii-parsing-http-14kg
+
+# TODO: implement other file types (js, css) and see if then subsequent requests
+#       for index.html will succeed or not
+
+function handleRequest() {
+    while read -r request; do
+        # Replace the fifo pipe with the commented-out compound command
+        # in order to see the newline characters in the HTTP message
+        if grep -q '^GET /index.html' <<< "$request"; then
+            {
+                printf "HTTP/1.1 200 OK\r\n"
+                printf "Content-Type: text/html\r\n"
+                printf "\r\n"
+                # echo -e 'HTTP/1.1 200 OK\r'
+                # echo -e 'Content-Type: text/html\r'
+                # echo -e '\r'
+                cat "/k/repos/kh/scs/ui/src/index.html"
+            } > /tmp/scs_response # | sed 's/$/\\r/' | tr -d '\r' | sed 's/$/\\n/' | tr -d '\n'  1>&2 
+        else
+            echo -e "HTTP/1.1 404 Not Found\nContent-Type: text/plain\n\nPage not found." > /tmp/scs_response
+        fi
+    done
+}
+
+rm -f /tmp/scs_response
+mkfifo /tmp/scs_response
+
+cat /tmp/scs_response | nc -lN 8080 -k -v | handleRequest 
+# while true; do
+#     cat /tmp/scs_response | nc -lN 8080 -k -v | handleRequest 
+# done
