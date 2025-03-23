@@ -13,6 +13,18 @@
 ./ui/src/lib/storyparser
 ```
 
+# Creating the database
+
+```sh
+
+# to not lose any data, ONLY RUN the sqlite3 command ONCE!
+
+if [[ ! -f ~/scs_story.db ]]; then
+    sqlite3 ~/scs_story.db < ./api/src/sql/ddl.sql
+fi
+
+```
+
 # Starting the server
 
 ```sh
