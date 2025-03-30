@@ -1,7 +1,9 @@
 create table if not exists users (
     id integer primary key autoincrement,
     invitation_key text not null,
-    name text not null
+    is_admin boolean default 0,
+    name text not null,
+    admin_name text -- as displayed to non-admins
 );
 
 create table if not exists stories (

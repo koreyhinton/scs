@@ -7,11 +7,10 @@ class DualServeHTTPRequestHandler(http.server.CGIHTTPRequestHandler):
     def translate_path(self, path):
         cgi_root_len = len("/cgi-bin/")
         if path.startswith("/cgi-bin/"):
-            # print(os.path.join(os.getcwd(), "api", "src", path[cgi_root_len:]))
-            # return os.path.join(os.getcwd(), "api", "src", path[cgi_root_len:])
             print(os.path.join("api", "src", "cgi-bin", path[cgi_root_len:]))
             return os.path.join("api", "src", "cgi-bin", path[cgi_root_len:])
-        return os.path.join(os.getcwd(), "ui", "src", path.lstrip('/'))
+        # print(os.path.join(os.getcwd(), "ui", "src", path.lstrip('/')))
+        return os.path.join(os.getcwd(), "ui", "src", path.lstrip('/').split('?')[0])
 
 def forced_shutdown(signal, frame):
     # todo: shutdown db connections, etc

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+invitation_key=
+
+while IFS="=" read -r key value; do
+    if [[ "$key" == "invitation_key" ]]; then
+        invitation_key="$value"
+    fi
+    # echo "Key: $key, Value: $value"
+done < <(echo "$QUERY_STRING" | sed 's/+/ /g' | tr '&' '\n')
+
+if [[ -z "$invitation_key" || ! "$invitation_key" =~ ^[a-fA-F0-9-]+$ || ${#invitation_key} -ne 36 ]]; then
+    echo "Status: 400 Bad Request"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "a valid invitation code is required"
+    exit 1;
+fi
+
+if cat api/src/sql/auth.sql | api/src/auth.py "${HOME}/scs_story.db" "${invitation_key}"; then
+    : # echo "authorized"
+else
+    echo "Status: 401 Unauthorized"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "unauthorized" | tee /dev/stderr
+    exit 1;
+fi
+
+# csv=$(sqlite3 -csv -header "${HOME}/scs_story.db" "select id,is_admin,name,admin_name from users;")
+csv=$(cat api/src/sql/users.sql | api/src/users.py "${HOME}/scs_story.db" "${invitation_key}")
+
+echo "Content-Type: text/plain"
+echo ""
+echo "${csv}"
+
+
+exit 0;
