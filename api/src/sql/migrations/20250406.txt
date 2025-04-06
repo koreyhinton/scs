@@ -1,0 +1,33 @@
+
+cp api/src/sql/ddl.sql ~/
+cd ~/
+sqlite3 scs_story.db
+
+BEGIN TRANSACTION
+
+CREATE TABLE story_shares_backup_20250406 AS SELECT * FROM story_shares;
+
+DROP TABLE story_shares;
+.read ddl.sql
+
+INSERT INTO story_shares (
+    id,
+    storyid,
+    userid,
+    is_illustrator,
+    is_composer,
+    default_illustrator_userid,
+    default_composer_userid
+)
+select 
+    id,
+    storyid,
+    userid,
+    0 is_illustrator,
+    0 is_composer,
+    null default_illustrator_userid,
+    null default_composer_userid
+from story_shares_backup_20250406;
+
+COMMIT;
+

@@ -22,8 +22,14 @@ create table if not exists story_shares (
     id integer primary key autoincrement,
     storyid integer not null,
     userid integer not null,
+    is_illustrator boolean default 0,
+    is_composer boolean default 0,
+    default_illustrator_userid integer,
+    default_composer_userid integer,
     foreign key (storyid) references stories(id) on delete cascade,
-    foreign key (userid) references users(id) on delete cascade -- do not re-establish story shares when user is added back
+    foreign key (userid) references users(id) on delete cascade, -- do not re-establish story shares when user is added back
+    foreign key (default_illustrator_userid) references users(id) on delete set null,
+    foreign key (default_composer_userid) references users(id) on delete set null
 );
 
 create table if not exists tags (
@@ -81,7 +87,7 @@ create table if not exists user_bookmarks (
     foreign key (storyid) references stories(id) on delete cascade
 );
 
-create view exportable_story as
+create view if not exists exportable_story as
 select
     s.global_storyid,
     s.title,
@@ -89,7 +95,7 @@ select
 from stories s
 join users u on u.id = s.authorid;
 
-create view exportable_page as
+create view if not exists exportable_page as
 select
     s.global_storyid,
     p.header,
@@ -101,7 +107,7 @@ from pages p
 join stories s on s.id = p.storyid
 left join tags t on t.id = p.tagid;
 
-create view exportable_tag as
+create view if not exists exportable_tag as
 select
     (select global_storyid from stories where id = t.storyid) global_storyid,
     name,
@@ -109,7 +115,7 @@ select
     (select name from users where id=t.tag_authorid) tag_author_name
 from tags t;
 
-create view exportable_choice as
+create view if not exists exportable_choice as
 select
     t.name tag_name,
     c.description,
