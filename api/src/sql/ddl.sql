@@ -80,9 +80,11 @@ create table if not exists user_bookmarks (
     id integer primary key autoincrement,
     storyid integer not null,
     tagid integer not null,
+    userid integer not null,
     previous_markid integer null,
     story_parse_position integer default 0, -- todo: see if this is really still needed by the story parser maybe it works without it
     foreign key (previous_markid) references user_bookmarks(id) on delete cascade,
+    foreign key (userid) references users(id) on delete cascade,
     foreign key (tagid) references tags(id) on delete cascade,
     foreign key (storyid) references stories(id) on delete cascade
 );

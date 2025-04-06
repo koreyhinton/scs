@@ -5,6 +5,8 @@
    <link rel="stylesheet" type="text/css" href="index.css" />
     <script src="service/api.js"></script>
     <script src="components/user-list.js"></script>
+    <script src="components/titleList.js"></script>
+    <script src="components/titleBar.js"></script>
     <script src="lib/storyparser/pagecontroller.js"></script>
     <script src="lib/storyparser/parser.js"></script>
     <script src="lib/storyparser/bundle.js"></script>
@@ -88,53 +90,6 @@
             }*/
             e = e || window.event; e.preventDefault();
             e.stopPropagation();
-        }
-
-        function buildTable() {
-            var html = "<table style='border-spacing: 30px;margin:0 auto;'>";
-
-            var listings = window.titles.split("|");
-
-            listings.forEach((l) => {
-                var id = l.split("+")[0];
-                var title = l.split("+")[1];
-                title = title.replace(/SPANISH|ACT|GRE|MEM/g, (m) => {
-                    return `<a class="vType">${m}</a>`;
-                });
-
-                var progCsv = MyJavascriptInterface.retrieveProgress(id);
-                var progNum = progCsv.split("|")[0];
-                var progPer = progCsv.split("|")[1];
-                //document.write(progPer+"<br/>");
-
-                var onOff = MyJavascriptInterface.retrieveSoundPreference(id);
-                //if (id=="2nogi4534")/*{}else*/{document.write(onOff);}
-                let audioImgSrc = audioIconFilepath(onOff);
-                let sound = `<img src="${audioImgSrc}">`;
-                html += `<tr><td onclick="location.href='?s=${id}'" class="storyList" style="background-image:url(${id}/images/${id}.png);">`;<!-- https://stackoverflow.com/a/11877033 -->
-                html += `<h2 style="color: white;padding:12px;"><span style="text-decoration:none;color: white;text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;">${title}</span> <button id="hist_${id}" style="width:44px;height:44px;" onclick="histClick(event, this)" class="redo"><img src="lib/evil-icons/evil-icons/ei-redo.svg"></button>&nbsp;<button id="sound_${id}" class="${onOff} speaker" onclick="audioClick(event, this)">${sound}</button></h2>`;
-                html += `<br/><span class="progress">${progNum}</span><br/><progress value="${progPer}" max="1" style="width:auto;display:block;margin-left:20px;margin-right:20px;position:relative;top:-27px;height:40px;accent-color:#71af88;"></progress>`;
-                /*if (title.indexOf("Des")>0) {
-                    html += "<div style='height:30px;'></div>";
-                    for (var i=0; i<3; i++) {
-                        var text = (i==0) ? "<a style='color:#CAFFB5'>$0.99 - Buy the complete series</a><br/>&nbsp;<a style='color:white'>Unlock <b>GRE</b>en Planet Saga</a>" : ""
-                        var bgColor = ["sienna","gold","silver"][i];
-                        var rad = [0,10,0][i];
-                        var sagaDiv = `<div style="width:100%;height:55px;background-color:${bgColor};border-radius:${rad}px;position:relative;top:${-4*((i+1)*10)}px;z-index:${[1000,999,998][i]};padding-top:10px;"> &nbsp;${text}`;
-                        sagaDiv += "</div>";
-                        html += sagaDiv;
-                    }
-                
-                    //html += `<div style="background-color:white;width:100%;height:100%;position:relative;bottom:0px;padding:0;margin:0;">&nbsp;</div>`;
-                }
-                */
-
-                html += "</td></tr>"
-            });
-
-            html += "</table>";
-
-            return html;
         }
 
         function getAllFlags() {
@@ -408,29 +363,12 @@ if (window.story != null) {
 
             document.getElementById('IMAGE_ID').remove();
             document.getElementById('SCENE_HEADING_ID').remove();
-                        var collDiv = document.getElementById("STORY_DIV_ID");
-                        //collDiv.innerHTML = buildTable();// "<A href='?s=2nogi4534'>Story 1</a>";
+                        //var collDiv = document.getElementById("STORY_DIV_ID");
+                        
 
 
-        //var titleBar = document.createElement("div");
-        /*titleBar.innerHTML*/var titleBarHtml = `<div id="titleBar"> <div id="titleBarText"><h1>
-            <a class="ttl1">S</a>
-            <a class="ttl2">h</a>
-            <a class="ttl1">o</a>
-            <a class="ttl2">r</a>
-            <a class="ttl1">t</a>
-            <a class="ttl2">-</a>
-            <a class="ttl1">C</a>
-            <a class="ttl2">i</a>
-            <a class="ttl1">r</a>
-            <a class="ttl2">c</a>
-            <a class="ttl1">u</a>
-            <a class="ttl2">i</a>
-            <a class="ttl1">t</a>
-            <div class="ttlN"><a class="ttlN">&nbsp;Storie<a class="ttlL">s</a></a></div></h1></div></div>`;
-        //titleBar.id = "titleBar";
-        //document.body.appendChild(titleBar);
-        collDiv.innerHTML += (titleBarHtml + buildTable());
+
+        //collDiv.innerHTML += (titleBarHtml + buildTable());
 
 
             ["CONTAINER_DIV_ID", "STORY_DIV_ID", "titleBar"].forEach((id)=> {
@@ -447,7 +385,10 @@ if (window.story != null) {
     <div id="CONTAINER_DIV_ID">
       <h1 id="SCENE_HEADING_ID"></h1>
       <img id="IMAGE_ID" src="2nogi4534/images/2nogi4534.png" style="border-radius:10px;height:251px">
-      <div id="STORY_DIV_ID"></div>
+      <div id="STORY_DIV_ID">
+        <div id="titleBar"><script>titleBar("load");</script></div>
+        <div id="titleList"><script>titleList("load");</script></div>
+      </div>
       <div id="USERS_DIV_ID" style="position:absolute;top:0;right:0"><script>userSelectBox("load");</script></div>
     </div>
         </body>

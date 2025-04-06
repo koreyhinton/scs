@@ -3,7 +3,7 @@ cp api/src/sql/ddl.sql ~/
 cd ~/
 sqlite3 scs_story.db
 
-BEGIN TRANSACTION
+BEGIN TRANSACTION;
 
 CREATE TABLE story_shares_backup_20250406 AS SELECT * FROM story_shares;
 
@@ -30,4 +30,32 @@ select
 from story_shares_backup_20250406;
 
 COMMIT;
+
+BEGIN TRANSACTION;
+
+CREATE TABLE user_bookmarks_backup_20250406 AS SELECT * FROM user_bookmarks;
+
+DROP TABLE user_bookmarks;
+.read ddl.sql
+
+INSERT INTO user_bookmarks (
+    id,
+    storyid,
+    tagid,
+    userid,
+    previous_markid,
+    story_parse_position
+)
+select
+    id,
+    storyid,
+    tagid,
+    0 userid,
+    previous_markid,
+    story_parse_position
+from user_bookmarks_backup_20250406;
+
+COMMIT;
+
+
 

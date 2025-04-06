@@ -28,6 +28,7 @@ const userSelectBox = async function(cmd) {
 
 //document.addEventListener("DOMContentLoaded", async function() {
     var usersCsv = await getUsersCsv();
+
     var usersTable = new window.Table(usersCsv);
     var userId = usersTable.select(["id"], (key,val) => {
         return key=="is_current_user" && val==1;
@@ -47,12 +48,13 @@ const userSelectBox = async function(cmd) {
         rows = [ ...rows, usersTable.select(["admin_name"], (key,val) => key==="is_admin" && val==1) ];
     }
     var users = [];
+    rows = rows[0]; //hmm
     for (var i=0; i<rows.length; i++) {
         if (rows[i].length == 0) continue;
-        users = [ ...users, rows[i][0][0].value ];
+        users = [ ...users, rows[i][0].value ];
     }
 
-    var selectHtml = `<select>`;
+    var selectHtml = `<select onchange="(function(e) {titleList('render', e.target.value);})(event)">`;
     for (var i=0; i<users.length; i++) {
         var attr = userName === users[i] ? "selected" : "";
         selectHtml += `<option ${attr}>${users[i]}</option>`
