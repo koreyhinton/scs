@@ -43,3 +43,4 @@ python3 serve.py
 - python3
 - bash
 - storyparser
+- sqlite3 (3.24.0 or later)

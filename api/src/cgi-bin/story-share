@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# This is only called by the author of the story to add or update share permissions,
+# there will be another api call to handle updating the default composer/illustrator preference
+# that will affect the same story_shares table.
+
+POST_DATA=$(cat)
+invitation_key=
+
+while IFS="=" read -r key value; do
+    if [[ "$key" == "invitation_key" ]]; then
+        invitation_key="$value"
+    fi
+    # echo "Key: $key, Value: $value"
+done < <(echo "$QUERY_STRING" | sed 's/+/ /g' | tr '&' '\n')
+
+if [[ -z "$invitation_key" || ! "$invitation_key" =~ ^[a-fA-F0-9-]+$ || ${#invitation_key} -ne 36 ]]; then
+    echo "Status: 400 Bad Request"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "a valid invitation code is required"
+    exit 1;
+fi
+
+if cat api/src/sql/auth.sql | api/src/auth.py "${HOME}/scs_story.db" "${invitation_key}"; then
+    : # echo "authorized"
+else
+    echo "Status: 401 Unauthorized"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "unauthorized" | tee /dev/stderr
+    exit 1;
+fi
+
+if ! cat api/src/sql/stories-upsert.sql "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA" | api/src/stories-upsert.py; then
+    echo "Status: 500 Internal Server Error"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "Database upsert failed (Type: parent)" | tee /dev/stderr
+    exit 1;
+fi
+
+if ! cat api/src/sql/story_shares-upsert.sql "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA" | api/src/story_shares-upsert.py; then
+    echo "Status: 500 Internal Server Error"
+    echo "Content-type: text/plain"
+    echo ""
+    echo "Database upsert failed (Type: child)" | tee /dev/stderr
+    exit 1;
+fi
+
+echo "Status: 200 OK"
+echo "Content-Type: text/plain"
+echo ""
+echo "success"
+
+exit 0;

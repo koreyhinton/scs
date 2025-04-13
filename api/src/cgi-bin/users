@@ -30,6 +30,7 @@ fi
 # csv=$(sqlite3 -csv -header "${HOME}/scs_story.db" "select id,is_admin,name,admin_name from users;")
 csv=$(cat api/src/sql/users.sql | api/src/users.py "${HOME}/scs_story.db" "${invitation_key}")
 
+echo "Status: 200 OK"
 echo "Content-Type: text/plain"
 echo ""
 echo "${csv}"

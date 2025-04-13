@@ -29,7 +29,8 @@ create table if not exists story_shares (
     foreign key (storyid) references stories(id) on delete cascade,
     foreign key (userid) references users(id) on delete cascade, -- do not re-establish story shares when user is added back
     foreign key (default_illustrator_userid) references users(id) on delete set null,
-    foreign key (default_composer_userid) references users(id) on delete set null
+    foreign key (default_composer_userid) references users(id) on delete set null,
+    unique(storyid, userid)
 );
 
 create table if not exists tags (
@@ -88,6 +89,24 @@ create table if not exists user_bookmarks (
     foreign key (tagid) references tags(id) on delete cascade,
     foreign key (storyid) references stories(id) on delete cascade
 );
+
+create table if not exists media (
+    id integer primary key autoincrement,
+    storyid integer not null,
+    pageid integer not null,
+    uploader_userid integer not null,
+    media_type text not null, -- 'art' | 'sfx' | 'music'
+    sticky_bit boolean default 0, -- plays on subsequent pages until replaced
+    lead_in_ms integer default 0,
+    ext varchar(4),-- filename is media/{id}.{ext}
+    is_public boolean default 0,
+    uploaded_at timestamp default current_timestamp,
+    foreign key (storyid) references stories(id) on delete set null,
+    foreign key (pageid) references pages(id) on delete set null,
+    foreign key (uploader_userid) references users(id) on delete set null,
+    check (media_type in ('art', 'sfx', 'music'))
+);
+create index if not exists idx_media_pageid on media(pageid);
 
 create view if not exists exportable_story as
 select
