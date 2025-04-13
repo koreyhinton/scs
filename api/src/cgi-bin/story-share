@@ -32,7 +32,7 @@ else
     exit 1;
 fi
 
-if ! cat api/src/sql/stories-upsert.sql "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA" | api/src/stories-upsert.py; then
+if ! cat api/src/sql/stories-upsert.sql | api/src/stories-upsert.py "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA"; then
     echo "Status: 500 Internal Server Error"
     echo "Content-type: text/plain"
     echo ""
@@ -40,7 +40,7 @@ if ! cat api/src/sql/stories-upsert.sql "${HOME}/scs_story.db" "$invitation_key"
     exit 1;
 fi
 
-if ! cat api/src/sql/story_shares-upsert.sql "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA" | api/src/story_shares-upsert.py; then
+if ! cat api/src/sql/story_shares-upsert.sql | api/src/story_shares-upsert.py "${HOME}/scs_story.db" "$invitation_key" "$POST_DATA"; then
     echo "Status: 500 Internal Server Error"
     echo "Content-type: text/plain"
     echo ""
