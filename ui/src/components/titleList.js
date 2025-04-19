@@ -74,12 +74,20 @@ const titleList = async function(cmd, payload) {
         listings = ["1+My Story"];
     }
 
-    listings.forEach((l) => {
+    listings.forEach((l,i) => {
         var id = l.split("+")[0];
         var title = l.split("+")[1];
         title = title.replace(/SPANISH|ACT|GRE|MEM/g, (m) => {
             return `<a class="vType">${m}</a>`;
         });
+
+        if (i == 0) {
+            title = `<span id="titleListItemNewTitle-1"></span>`;//<script>console.log('script will run');titleListItemNewTitle("load")</script>`;
+            titleListItemNewTitle("load");
+        } else {
+            // todo: custom data as edit button
+            title = `<span id="titleListItemNewTitle-${i}"></span><script>titleListItemNewTitle("load",${title},${i})</script>`;
+        }
 
         //var progCsv = MyJavascriptInterface.retrieveProgress(id);
         var progNum = l.split("+")[2]; /*progCsv.split("|")[0];*/
@@ -91,7 +99,7 @@ const titleList = async function(cmd, payload) {
         let audioImgSrc = audioIconFilepath(onOff);
         let sound = `<img src="${audioImgSrc}">`;
         html += `<tr><td onclick="location.href='?s=${id}'" class="storyList" style="background-image:url(${id}/images/${id}.png);">`;<!-- https://stackoverflow.com/a/11877033 -->
-        html += `<h2 style="color: white;padding:12px;"><span style="text-decoration:none;color: white;text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;">${title}</span> <button id="hist_${id}" style="width:44px;height:44px;" onclick="histClick(event, this)" class="redo"><img src="lib/evil-icons/evil-icons/ei-redo.svg"></button>&nbsp;<button id="sound_${id}" class="${onOff} speaker" onclick="audioClick(event, this)">${sound}</button></h2>`;
+        html += `<div style="color: white;padding:12px;"><div style="text-decoration:none;color: white;text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;">${title}</div> <button id="hist_${id}" style="width:44px;height:44px;" onclick="histClick(event, this)" class="redo"><img src="lib/evil-icons/evil-icons/ei-redo.svg"></button>&nbsp;<button id="sound_${id}" class="${onOff} speaker" onclick="audioClick(event, this)">${sound}</button></div>`;
         html += `<br/><span class="progress">${progNum}</span><br/><progress value="${progPer}" max="1" style="width:auto;display:block;margin-left:20px;margin-right:20px;position:relative;top:-27px;height:40px;accent-color:#71af88;"></progress>`;
         /*if (title.indexOf("Des")>0) {
             html += "<div style='height:30px;'></div>";

@@ -44,3 +44,9 @@ python3 serve.py
 - bash
 - storyparser
 - sqlite3 (3.24.0 or later)
+
+# Run component unit tests
+
+```sh
+code=$(cat ui/src/components/*.js); calls=$(cat ui/src/testcalls.js); echo "${code}"$'\n'"${calls}" | node
+```
