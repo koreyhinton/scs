@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
-        <head>
-   <link rel="stylesheet" type="text/css" href="lib/storyparser/storyparser.css" />
-   <link rel="stylesheet" type="text/css" href="index.css" />
+  <head>
+    <link rel="stylesheet" type="text/css" href="lib/storyparser/storyparser.css" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+    <link rel="stylesheet" type="text/css" href="components/components.css" />
     <script src="service/api.js"></script>
     <script src="components/user-list.js"></script>
     <script src="components/titleList.js"></script>
     <script src="components/titleBar.js"></script>
     <script src="components/titleListItemComponents.js"></script>
+    <script src="components/textInputsModal.js"></script>
     <script src="lib/storyparser/pagecontroller.js"></script>
     <script src="lib/storyparser/parser.js"></script>
     <script src="lib/storyparser/bundle.js"></script>
@@ -390,7 +392,12 @@ if (window.story != null) {
         <div id="titleBar"><script>titleBar("load");</script></div>
         <div id="titleList"><script>titleList("load");</script></div>
       </div>
-      <div id="USERS_DIV_ID" style="position:absolute;top:0;right:0"><script>userSelectBox("load");</script></div>
+    <div id="USERS_DIV_ID" style="position:absolute;top:0;right:0"><script>userSelectBox("load");</script></div>
     </div>
-        </body>
+    <div>
+      <div id="textInputsModal-1"></div><script>textInputsModal("load");</script>
+    </div>
+    
+    </div>
+  </body>
 </html>

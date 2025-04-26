@@ -1,3 +1,4 @@
+// EXISTING TITLE
 const titleListItemExistingTitle = async function(cmd, payload, id = 'Error') {
     if (cmd == "load") {
         if (document.readyState === "loading") {
@@ -11,6 +12,11 @@ const titleListItemExistingTitle = async function(cmd, payload, id = 'Error') {
     }
 
     // DATA
+
+    // TODO:
+    //    when adding the textInputsModal
+    //    must add a new object property: hidden. To include the id field but don't show it.
+    //        e.g., { label: "id", value: "1", key: "id", hidden: true },
 
     var elementId = `titleListItemExistingTitle-${id}`;
 
@@ -35,7 +41,7 @@ const titleListItemExistingTitle = async function(cmd, payload, id = 'Error') {
     container.appendChild(a);
 };
 
-
+// NEW TITLE
 const titleListItemNewTitle = async function(cmd, payload, id = 1) {
     console.log(cmd,payload,id);
     if (cmd == "load") {
@@ -48,7 +54,13 @@ const titleListItemNewTitle = async function(cmd, payload, id = 1) {
         return;
     }
     // DATA
-    var fields = [{ label: "title", value: "" }];
+    var modalPayload = {
+        title: "Add a new story share",
+        inputs: [
+            { label: "Title", value: "", key: "title" },
+        ],
+        onSubmit: "storyShareNew"
+    };
     var modalCmd = "show";
     var titleTextContent = "&plus; (Add a new short-circuit story!)";
 
@@ -67,7 +79,7 @@ const titleListItemNewTitle = async function(cmd, payload, id = 1) {
     a.addEventListener("click", function(e) {
         e.preventDefault();
         e.stopPropagation();
-        textInputsModal(modalCmd, fields, 1);
+        textInputsModal(modalCmd, modalPayload, 1);
     });
 
     const container = document.getElementById(`titleListItemNewTitle-${id}`);
